@@ -1744,4 +1744,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
   </body>
+  <div id="profile-modal" style="display:none; position:fixed; inset:0; z-index:20000; background:rgba(10,25,18,0.72); align-items:center; justify-content:center; padding:20px;">
+  <div style="width:100%; max-width:480px; background:#fff; color:#203329; border-radius:18px; padding:28px;">
+    <button id="btn-close-modal" type="button" style="float:right;">Close</button>
+    <h2>Complete Your Farmer Profile</h2>
+
+    <label for="profile-age">Age</label>
+    <input id="profile-age" type="number" min="18" max="100" style="display:block; width:100%; margin:8px 0 18px; padding:12px;">
+
+    <label for="profile-land">Farm area (acres)</label>
+    <input id="profile-land" type="number" min="0" step="0.1" style="display:block; width:100%; margin:8px 0 18px; padding:12px;">
+
+    <label for="profile-income">Annual farm income (₹)</label>
+    <input id="profile-income" type="number" min="0" style="display:block; width:100%; margin:8px 0 18px; padding:12px;">
+
+    <button id="btn-save-profile" type="button">Save Profile</button>
+  </div>
+</div>
 </html>
