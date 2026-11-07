@@ -1,839 +1,1746 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Uzhavan - Smart Farming AI Assistant</title>
-    <meta name="description" content="Uzhavan: Your AI-powered companion for smart farming, government schemes, and financial guidance.">
-    
+    <meta
+      name="description"
+      content="Uzhavan: Your AI-powered companion for smart farming, government schemes, and financial guidance."
+    />
+
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="script.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => console.log('Uzhavan Offline Mode Active!'), err => console.log('SW registration failed:', err));
-            });
-        }
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").then(
+            (reg) => console.log("Uzhavan Offline Mode Active!"),
+            (err) => console.log("SW registration failed:", err),
+          );
+        });
+      }
     </script>
     <style>
-        /* Hide Google Translate Widget and Banner */
-        #google_translate_element { display: none !important; }
-        .goog-te-banner-frame { display: none !important; }
-        body { top: 0 !important; }
-        font { background: transparent !important; color: inherit !important; box-shadow: none !important; }
+      /* Hide Google Translate Widget and Banner */
+      #google_translate_element {
+        display: none !important;
+      }
+      .goog-te-banner-frame {
+        display: none !important;
+      }
+      body {
+        top: 0 !important;
+      }
+      font {
+        background: transparent !important;
+        color: inherit !important;
+        box-shadow: none !important;
+      }
     </style>
-</head>
-<body class="bg">
+  </head>
+  <body class="bg">
     <div id="app">
-        <!-- New Welcome Particles Effect -->
-        <div class="welcome-bg hidden-overlay"></div>
-        <canvas id="effect" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -2;"></canvas>
-
-        <div class="welcome-overlay hidden-overlay" id="welcome-overlay">
-           <div class="welcome-content">
-              <h1 class="welcome-text">Welcome Farmers 🌾</h1>
-              <p class="welcome-subtext">Optimizing your harvest with AI</p>
-           </div>
-        </div>
-
-        <!-- Animated Nature Background Elements -->
-        <div class="sun-effect"></div>
-        <div class="premium-glow"></div>
-        <div class="premium-glow-2"></div>
-        <div class="mountain-layer"></div>
-        <div class="mountain-layer-2"></div>
-
-        <!-- Offline Banner -->
-    <div id="offline-banner" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 40px; background: #FF9800; color: white; align-items: center; justify-content: center; gap: 10px; font-weight: bold; z-index: 10002; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-        <i data-lucide="wifi-off" style="width: 18px; height: 18px;"></i>
-        <span id="txt-offline-active">Offline Mode Active in Uzhavan</span>
-    </div>
-
-    <!-- Login Page -->
-        <section id="login-page" class="page active">
-            <div class="login-container">
-                <div class="logo-section animate">
-                    <div id="dynamic-logo" class="logo-icon">
-                        <svg width="70" height="70" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="treeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#66BB6A" />
-                                    <stop offset="100%" stop-color="#FFD54F" />
-                                </linearGradient>
-                                <filter id="softGlow">
-                                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
-                            <!-- Strong Trunk -->
-                            <path d="M12 22C12 22 10 16 10 13C10 10 14 10 14 13C14 16 12 22 12 22Z" fill="#3E2723" />
-                            <path d="M12 16C15 13 16 11 16 9" stroke="#3E2723" stroke-width="1.5" stroke-linecap="round"/>
-                            <!-- Smooth Rounded Leaves -->
-                            <circle cx="12" cy="7" r="6" fill="url(#treeGrad)" filter="url(#softGlow)" />
-                            <circle cx="7" cy="11" r="5" fill="url(#treeGrad)" opacity="0.95" filter="url(#softGlow)" />
-                            <circle cx="17" cy="11" r="5" fill="url(#treeGrad)" opacity="0.95" filter="url(#softGlow)" />
-                        </svg>
-                    </div>
-                    <h1 id="txt-app-title">Uzhavan</h1>
-                    <p id="txt-app-subtitle">Smart Farming Assistant</p>
-                </div>
-
-                <div class="card animate" style="animation-delay: 0.1s">
-                    <div class="lang-selector">
-                        <label for="language" id="txt-lang-label">Select Language</label>
-                        <select id="language">
-                            <option value="en">English (English)</option>
-                            <option value="ta">தமிழ் (Tamil)</option>
-                            <option value="hi">हिन्दी (Hindi)</option>
-                            <option value="te">తెలుగు (Telugu)</option>
-                            <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                            <option value="ml">മലയാളം (Malayalam)</option>
-                            <option value="mr">मराठी (Marathi)</option>
-                            <option value="gu">ગુજરાતી (Gujarati)</option>
-                            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                            <option value="bn">বাংলা (Bengali)</option>
-                            <option value="or">ଓଡ଼ିଆ (Odia)</option>
-                            <option value="as">অসমীয়া (Assamese)</option>
-                        </select>
-                    </div>
-
-                    <div class="login-steps">
-                        <div id="step-phone" class="step active">
-                            <h3 id="txt-welcome">Welcome Port</h3>
-                            <p id="txt-enter-phone" style="margin-bottom: 20px; color: var(--text-muted);">Enter your mobile number to get started</p>
-                            
-                            <div class="phone-input-group">
-                                <select class="country-code">
-                                    <option value="+91">+91</option>
-                                </select>
-                                <input type="tel" id="placeholder-phone" placeholder="PhoneNumber" maxlength="10">
-                            </div>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 10px;">
-                                <button id="btn-get-otp" class="btn btn-primary" style="width: 100%;">
-                                    <span id="txt-get-otp">Get OTP</span>
-                                    <i data-lucide="arrow-right"></i>
-                                </button>
-                                
-                                <button id="btn-call-verify" class="btn btn-outline" style="width: 100%; border-color: var(--primary); color: var(--primary);">
-                                    <i data-lucide="phone-call" style="width: 18px; height: 18px;"></i>
-                                    <span id="txt-verify-call">Verify via Call</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div id="step-otp" class="step">
-                            <h3 id="txt-verify-otp">Verify OTP</h3>
-                            <p id="txt-enter-code" style="margin-bottom: 20px; color: var(--text-muted);">Enter the code sent to your phone</p>
-                            
-                            <div id="otp-status-msg" style="margin-bottom: 12px; font-size: 0.85rem; color: var(--accent); font-weight: 600; text-align: center;"></div>
-
-                            <input type="text" id="otp-input" placeholder="000000" maxlength="6" style="text-align: center; letter-spacing: 8px; font-size: 1.5rem; margin-bottom: 16px; border: 2px solid var(--primary);">
-                            
-
-                            
-                            <div style="display: flex; flex-direction: column; gap: 10px;">
-                                <button id="btn-verify" class="btn btn-primary" style="width: 100%;">
-                                    <span id="txt-login">Login</span>
-                                    <div class="loading-spinner"></div>
-                                </button>
-                                
-                                <button id="btn-resend-otp" class="btn btn-ghost" style="font-size: 0.85rem; color: var(--primary);">
-                                    <span id="txt-resend">Resend OTP</span>
-                                </button>
-                                
-                                <button id="btn-back" class="btn btn-outline" style="width: 100%;"><span id="txt-back">Back</span></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <!-- Login Page -->
+      <section id="login-page" class="page active">
+        <div class="login-layout">
+          <aside class="login-visual">
+            <div class="login-visual-brand">
+              <span class="visual-leaf"><i data-lucide="sprout"></i></span>
+              <span>UZHAVAN</span>
             </div>
-        </section>
 
-        <!-- Application Navigation (Visible after login) -->
-        <div id="app-navigation" style="display: none;">
-            <header class="dashboard-header">
-                <div class="logo-info" style="display: flex; align-items: center; gap: 10px;">
-                    <i data-lucide="user-circle" style="color: var(--primary); width: 32px; height: 32px;"></i>
-                    <h2 style="font-size: 1.25rem;">Uzhavan Dashboard</h2>
+            <div class="login-visual-copy">
+              <p class="login-eyebrow">SMART FARMING, MADE SIMPLE</p>
+              <h2>Empowering Agriculture,<br />Connecting Markets</h2>
+              <p>
+                Practical support for your crops, water, and growing season.
+              </p>
+            </div>
+
+            <p class="login-photo-caption">Growing a better tomorrow</p>
+          </aside>
+
+          <main class="login-main">
+            <div class="login-container">
+              <div class="login-heading">
+                <div id="dynamic-logo" class="logo-icon" aria-hidden="true">
+                  <i data-lucide="leaf"></i>
                 </div>
-                <div class="user-control" style="display: flex; align-items: center; gap: 12px;">
-                    <select id="main-lang-selector" style="padding: 6px 10px; font-size: 0.9rem; font-weight: bold; border-radius: 8px; background: rgba(0,0,0,0.05); border: 1px solid var(--primary); color: var(--primary);">
-                        <option value="en">English</option>
-                        <option value="ta">தமிழ்</option>
-                        <option value="hi">हिन्दी</option>
-                        <option value="te">తెలుగు</option>
-                        <option value="kn">ಕನ್ನಡ</option>
-                        <option value="ml">മലയാളം</option>
-                        <option value="mr">मराठी</option>
-                        <option value="gu">ગુજરાતી</option>
-                        <option value="pa">ਪੰਜਾਬੀ</option>
-                        <option value="bn">বাংলা</option>
-                        <option value="or">ଓଡ଼ିଆ</option>
-                        <option value="as">অসমীয়া</option>
-                    </select>
-                    <div class="user-info">
-                        <div id="voice-mode-indicator" style="display:none; align-items:center; gap:5px; background:#ffebee; color:#d32f2f; padding:4px 10px; border-radius:15px; font-size:0.75rem; font-weight:bold; animation: pulse 2s infinite;">
-                            <div style="width:8px; height:8px; background:#d32f2f; border-radius:50%;"></div> LIVE VOICE
-                        </div>
-                        <button id="btn-profile" class="btn btn-outline" style="padding: 8px; border-radius: 50%; width: 44px; height: 44px;">
-                            <i data-lucide="user"></i>
-                        </button>
-                        <button id="btn-logout" class="btn btn-outline" style="padding: 8px 12px; font-size: 0.8rem;">
-                            <i data-lucide="log-out"></i>
-                        </button>
+                <p class="login-eyebrow">YOUR FARMING ASSISTANT</p>
+                <h1 id="txt-app-title">Welcome to Uzhavan</h1>
+                <p id="txt-app-subtitle">
+                  Sign in with your mobile number to continue.
+                </p>
+              </div>
+
+              <div class="login-card">
+                <div class="lang-selector">
+                  <label for="language" id="txt-lang-label"
+                    >Choose your language</label
+                  >
+                  <select id="language">
+                    <option value="en">English</option>
+                    <option value="ta">தமிழ்</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="kn">ಕನ್ನಡ</option>
+                    <option value="ml">മലയാളം</option>
+                    <option value="mr">मराठी</option>
+                    <option value="gu">ગુજરાતી</option>
+                    <option value="pa">ਪੰਜਾਬੀ</option>
+                    <option value="bn">বাংলা</option>
+                    <option value="or">ଓଡ଼ିଆ</option>
+                    <option value="as">অসমীয়া</option>
+                  </select>
+                </div>
+
+                <div class="login-steps">
+                  <div id="step-phone" class="step active">
+                    <h3 id="txt-welcome">Welcome, Farmer</h3>
+                    <p id="txt-enter-phone">
+                      Enter your mobile number to get started.
+                    </p>
+
+                    <div class="phone-input-group">
+                      <select class="country-code" aria-label="Country code">
+                        <option value="+91">+91</option>
+                      </select>
+                      <input
+                        type="tel"
+                        id="placeholder-phone"
+                        placeholder="10-digit mobile number"
+                        maxlength="10"
+                        autocomplete="tel"
+                      />
                     </div>
+
+                    <button
+                     
+                    id="btn-get-otp"
+                      class="btn btn-primary login-submit"
+                    >
+                      <span id="txt-get-otp">Get OTP</span>
+                      <i data-lucide="arrow-right"></i>
+                    </button>
+                  </div>
+
+                  <div id="step-otp" class="step">
+                    <h3 id="txt-verify-otp">Verify your number</h3>
+                    <p id="txt-enter-code">Enter the OTP sent to your phone.</p>
+                    <div id="otp-status-msg" class="otp-status"></div>
+
+                    <input
+                      type="text"
+                      id="otp-input"
+                      placeholder="Enter OTP"
+                      maxlength="6"
+                      inputmode="numeric"
+                      autocomplete="one-time-code"
+                    />
+
+                    <button
+                      id="btn-verify"
+                      class="btn btn-primary login-submit"
+                    >
+                      <span id="txt-login">Login</span>
+                      <div class="loading-spinner"></div>
+                    </button>
+
+                    <button id="btn-resend-otp" class="login-secondary">
+                      <span id="txt-resend">Resend OTP</span>
+                    </button>
+
+                    <button id="btn-back" class="login-secondary">
+                      <span id="txt-back">Back</span>
+                    </button>
+                  </div>
                 </div>
-            </header>
-
-            <nav style="display:flex; justify-content:space-around; background:rgba(255,255,255,0.88); backdrop-filter: blur(10px); padding:10px 16px; border-bottom:1px solid #d1fae5; position:sticky; top:0; z-index:90; flex-wrap: wrap; gap: 10px;">
-                <button id="nav-dashboard" class="btn btn-primary" style="flex:1; margin:0 4px; font-size: 0.95rem; min-width: 120px;"><i data-lucide="layout-dashboard"></i> Dashboard</button>
-                <button id="nav-market" class="btn btn-outline" style="flex:1; margin:0 4px; font-size: 0.95rem; min-width: 120px; border-color:#a5d6a7; color:#1B5E20;"><i data-lucide="trending-up"></i> Market Prices</button>
-                <button id="nav-pest" class="btn btn-outline" style="flex:1; margin:0 4px; font-size: 0.95rem; min-width: 120px; border-color:#a5d6a7; color:#1B5E20;"><i data-lucide="shield-check"></i> Pest Shield</button>
-                <button id="nav-water" class="btn btn-outline" style="flex:1; margin:0 4px; font-size: 0.95rem; min-width: 120px; border-color:#a5d6a7; color:#1B5E20;"><i data-lucide="droplet"></i> Water Calculator</button>
-                <button id="nav-scheduler" class="btn btn-outline" style="flex:1; margin:0 4px; font-size: 0.95rem; min-width: 120px; border-color:#a5d6a7; color:#1B5E20;"><i data-lucide="calendar"></i> Crop Scheduler</button>
-                <button id="btn-voice-lang" class="btn" style="background: #e1f5fe; color: #0277bd; font-weight: 700; padding: 10px 18px; border-radius: 18px; display: flex; align-items: center; gap: 8px; border: 1px solid #b3e5fc;">
-                    <i data-lucide="languages"></i> <span id="txt-lang-change-btn">Voice Language</span>
-                </button>
-            </nav>
+              </div>
+            </div>
+          </main>
         </div>
+      </section>
 
-        <!-- Dashboard Page -->
-        <section id="dashboard-page" class="page">
+      <div id="app-navigation" style="display: none">
+        <aside class="sidebar">
+          <div class="sidebar-brand">
+            <span class="brand-icon"><i data-lucide="sprout"></i></span>
+            <span><strong>Uzhavan</strong><small>Smart Farming</small></span>
+          </div>
 
-    <!-- Animated Backgrounds -->
-    <div class="wave-container">
+          <nav class="sidebar-nav" aria-label="Main navigation">
+            <button id="nav-dashboard" class="sidebar-link active-nav">
+              <i data-lucide="layout-dashboard"></i><span>Dashboard</span>
+            </button>
+            <button id="nav-chat" class="sidebar-link">
+              <i data-lucide="message-circle"></i><span>AI Assistant</span>
+            </button>
+            <button id="nav-pest" class="sidebar-link">
+              <i data-lucide="scan-search"></i><span>Crop Diagnosis</span>
+            </button>
+            <button id="nav-market" class="sidebar-link">
+              <i data-lucide="trending-up"></i><span>Market Prices</span>
+            </button>
+            <button id="nav-water" class="sidebar-link">
+              <i data-lucide="droplets"></i><span>Water Usage</span>
+            </button>
+            <button id="nav-scheduler" class="sidebar-link">
+              <i data-lucide="calendar-days"></i><span>Crop Planner</span>
+            </button>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <label for="main-lang-selector">Language</label>
+            <select id="main-lang-selector">
+              <option value="en">English</option>
+              <option value="ta">தமிழ்</option>
+              <option value="hi">हिन्दी</option>
+              <option value="te">తెలుగు</option>
+              <option value="kn">ಕನ್ನಡ</option>
+              <option value="ml">മലയാളം</option>
+            </select>
+
+            <button id="btn-profile" class="profile-link">
+              <i data-lucide="user-round"></i>
+              <span
+                ><strong>Farmer Profile</strong
+                ><small>View your details</small></span
+              >
+            </button>
+
+            <button id="btn-logout" class="sidebar-link logout-link">
+              <i data-lucide="log-out"></i><span>Log out</span>
+            </button>
+          </div>
+        </aside>
+      </div>
+      <!-- Dashboard Page -->
+      <section id="dashboard-page" class="page">
+        <!-- Animated Backgrounds -->
         <div class="wave"></div>
         <div class="wave2"></div>
+
+        <main
+          class="dashboard-content"
+          style="max-width: 1200px; margin: 0 auto; padding: 40px 20px"
+        >
+          <!-- Profile Completion Banner -->
+          <div
+            id="profile-banner"
+            class="card"
+            style="
+              display: none;
+              background: linear-gradient(135deg, #ff9800, #f57c00);
+              color: white;
+              margin-bottom: 25px;
+              border: none;
+              padding: 15px 25px;
+              align-items: center;
+              justify-content: space-between;
+              flex-direction: row;
+              gap: 15px;
+            "
+          >
+            <div style="display: flex; align-items: center; gap: 15px">
+              <i data-lucide="sparkles" style="width: 24px; height: 24px"></i>
+              <div>
+                <h4 id="txt-banner-title" style="margin: 0; color: white">
+                  Complete Your Profile for Better Recommendations
+                </h4>
+                <p
+                  id="txt-banner-sub"
+                  style="margin: 0; font-size: 0.85rem; opacity: 0.9"
+                >
+                  Help us give you precision advice on crops and weather.
+                </p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px">
+              <button
+                id="btn-complete-profile"
+                class="btn btn-primary"
+                style="
+                  background: white;
+                  color: #f57c00;
+                  font-size: 0.85rem;
+                  padding: 8px 16px;
+                "
+              >
+                Set Up Now
+              </button>
+              <button
+                type="button"
+                id="btn-skip-profile"
+                class="btn btn-ghost"
+                style="color: white; font-size: 0.85rem; padding: 8px"
+              >
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Offline SMS Alert System Status -->
+          <div
+            id="sms-status-card"
+            class="card"
+            style="
+              margin-bottom: 25px;
+              border-left: 6px solid var(--primary);
+              background: rgba(255, 255, 255, 0.05);
+              display: none;
+              justify-content: space-between;
+              align-items: center;
+              padding: 15px;
+              border-radius: 12px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+              flex-wrap: wrap;
+              gap: 10px;
+            "
+          >
+            <div style="display: flex; align-items: center; gap: 15px">
+              <div
+                style="
+                  background: #2e7d32;
+                  color: white;
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <i data-lucide="message-square"></i>
+              </div>
+              <div>
+                <h4 style="margin: 0; font-size: 1rem; color: #1b5e20">
+                  SMS Offline Advisory System
+                </h4>
+                <p
+                  id="txt-sms-status"
+                  style="margin: 0; font-size: 0.8rem; color: #666"
+                >
+                  Active for: +91 97XXXX XX10 (Tamil Nadu)
+                </p>
+              </div>
+            </div>
+            <button
+              class="btn btn-primary"
+              id="btn-test-sms"
+              style="padding: 6px 14px; font-size: 0.75rem; font-weight: bold"
+            >
+              Simulate Alert
+            </button>
+          </div>
+
+          <div
+            class="hero-section"
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              gap: 40px;
+              margin-bottom: 40px;
+            "
+          >
+            <div class="hero-left" style="flex: 1 1 500px">
+              <h1
+                id="txt-dash-title"
+                style="
+                  color: #1b5e20;
+                  font-size: 3rem;
+                  font-weight: 800;
+                  line-height: 1.15;
+                  margin-bottom: 18px;
+                "
+              >
+                AI-powered farming help in your language.
+              </h1>
+              <p
+                style="
+                  color: #4a7a4a;
+                  font-size: 1.05rem;
+                  margin-bottom: 28px;
+                  line-height: 1.65;
+                "
+              >
+                Snap a crop leaf, ask in voice or text, and get disease
+                diagnosis, weather-based tips, and expert guidance — fast,
+                friendly, and multilingual.
+              </p>
+
+              <!-- Scanner Tools moved here -->
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 15px;
+                  margin-bottom: 20px;
+                "
+              >
+                <input
+                  type="file"
+                  id="crop-image-upload"
+                  accept="image/*"
+                  capture="environment"
+                  style="display: none"
+                />
+                <button
+                  id="btn-upload-image"
+                  class="btn btn-soft-green"
+                  style="
+                    padding: 12px 20px;
+                    font-weight: bold;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                  "
+                >
+                  <i data-lucide="upload" style="width: 18px; height: 18px"></i>
+                  <span id="txt-upload-image">Upload Crop Image</span>
+                </button>
+                <button
+                  id="btn-open-camera"
+                  class="btn btn-primary"
+                  style="
+                    padding: 12px 24px;
+                    font-weight: bold;
+                    border-radius: 20px;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                  "
+                >
+                  Diagnose
+                </button>
+              </div>
+
+              <div
+                id="camera-container"
+                style="
+                  display: none;
+                  width: 100%;
+                  max-width: 400px;
+                  height: 200px;
+                  background: #000;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  position: relative;
+                "
+              >
+                <video
+                  id="camera-stream"
+                  autoplay
+                  playsinline
+                  style="width: 100%; height: 100%; object-fit: cover"
+                ></video>
+                <button
+                  type="button"
+                  id="btn-close-camera"
+                  class="btn"
+                  style="
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    padding: 4px;
+                    background: rgba(0, 0, 0, 0.5);
+                    color: white;
+                    border: none;
+                  "
+                >
+                  <i data-lucide="x" style="width: 18px; height: 18px"></i>
+                </button>
+                <button
+                  id="btn-capture-scan"
+                  class="btn btn-primary"
+                  style="
+                    position: absolute;
+                    bottom: 10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 6px 16px;
+                    font-size: 0.85rem;
+                  "
+                >
+                  Capture & Scan
+                </button>
+              </div>
+
+              <div
+                id="scan-result"
+                style="
+                  display: none;
+                  margin-top: 10px;
+                  padding: 15px;
+                  background: rgba(76, 175, 80, 0.12);
+                  backdrop-filter: blur(12px);
+                  border: 1px solid rgba(255, 255, 255, 0.15);
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                  border-radius: 12px;
+                  max-width: 400px;
+                  color: var(--text-main);
+                "
+              >
+                <p style="font-weight: 600; font-size: 0.9rem">Scan Result:</p>
+                <p
+                  id="scan-result-text"
+                  style="font-size: 0.85rem; color: var(--primary)"
+                >
+                  No crop detected yet.
+                </p>
+                <img
+                  id="uploaded-image-preview"
+                  class="hidden"
+                  style="
+                    width: 100%;
+                    border-radius: 8px;
+                    margin-top: 8px;
+                    max-height: 150px;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+            </div>
+
+            <div class="hero-right" style="flex: 1 1 400px; position: relative">
+              <div class="sun-orb"></div>
+
+              <div style="display: flex; gap: 15px; margin-bottom: 20px">
+                <div
+                  class="card"
+                  style="flex: 1; text-align: center; padding: 18px 10px"
+                >
+                  <h3
+                    style="
+                      font-size: 1.6rem;
+                      margin-bottom: 5px;
+                      color: #1b5e20;
+                    "
+                  >
+                    256
+                  </h3>
+                  <p style="font-size: 0.78rem; color: #5a8a5a">
+                    Farmers helped today
+                  </p>
+                </div>
+                <div
+                  class="card"
+                  style="flex: 1; text-align: center; padding: 18px 10px"
+                >
+                  <h3
+                    style="
+                      font-size: 1.6rem;
+                      margin-bottom: 5px;
+                      color: #1b5e20;
+                    "
+                  >
+                    10
+                  </h3>
+                  <p style="font-size: 0.78rem; color: #5a8a5a">
+                    Languages supported
+                  </p>
+                </div>
+                <div
+                  class="card"
+                  style="flex: 1; text-align: center; padding: 18px 10px"
+                >
+                  <h3
+                    style="
+                      font-size: 1.6rem;
+                      margin-bottom: 5px;
+                      color: #1b5e20;
+                    "
+                  >
+                    ~92%
+                  </h3>
+                  <p style="font-size: 0.78rem; color: #5a8a5a">
+                    Demo accuracy
+                  </p>
+                </div>
+              </div>
+
+              <!-- Weather Status Widget (AgriAssist Style) -->
+              <div class="card" style="padding: 22px; border-radius: 20px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 16px;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      flex: 1;
+                    "
+                  >
+                    <i
+                      data-lucide="map-pin"
+                      style="width: 16px; height: 16px; color: #4caf50"
+                    ></i>
+                    <select
+                      id="location-input"
+                      style="
+                        background: transparent;
+                        border: none;
+                        border-bottom: 2px solid rgba(46, 204, 113, 0.3);
+                        font-size: 0.9rem;
+                        font-weight: 700;
+                        color: #1b5e20;
+                        padding: 2px 5px;
+                        margin: 0;
+                        width: 100%;
+                        border-radius: 0;
+                        cursor: pointer;
+                      "
+                    >
+                      <option value="Chennai, TN" selected>
+                        Chennai, Tamil Nadu
+                      </option>
+                      <option value="Coimbatore, TN">
+                        Coimbatore, Tamil Nadu
+                      </option>
+                      <option value="Ludhiana, PB">Ludhiana, Punjab</option>
+                      <option value="Pune, MH">Pune, Maharashtra</option>
+                      <option value="Lucknow, UP">
+                        Lucknow, Uttar Pradesh
+                      </option>
+                      <option value="Vijayawada, AP">
+                        Vijayawada, Andhra Pradesh
+                      </option>
+                      <option value="Hassan, KA">Hassan, Karnataka</option>
+                      <option value="Burdwan, WB">Burdwan, West Bengal</option>
+                      <option value="Bhopal, MP">Bhopal, Madhya Pradesh</option>
+                      <option value="Jaipur, RJ">Jaipur, Rajasthan</option>
+                      <option value="Nashik, MH">Nashik, Maharashtra</option>
+                    </select>
+                  </div>
+                  <button
+                    id="btn-update-weather"
+                    class="btn btn-soft-green"
+                    style="
+                      padding: 7px 14px;
+                      font-size: 0.82rem;
+                      font-weight: bold;
+                      border-radius: 10px;
+                    "
+                  >
+                    Update Weather
+                  </button>
+                </div>
+
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                  "
+                >
+                  <i
+                    data-lucide="cloud-sun"
+                    id="weather-icon"
+                    style="width: 44px; height: 44px; color: #f9a825"
+                  ></i>
+                  <h2
+                    style="
+                      font-size: 2.2rem;
+                      margin: 0;
+                      font-weight: 800;
+                      color: #1b5e20;
+                    "
+                  >
+                    <span id="weather-temp">32</span>°C
+                  </h2>
+                  <span
+                    style="font-size: 1rem; color: #4a7a4a; font-weight: 600"
+                    id="txt-weather-status"
+                    >Partly Cloudy</span
+                  >
+                </div>
+
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    border-top: 1px solid #e2f5e2;
+                    padding-top: 16px;
+                  "
+                >
+                  <div style="text-align: center">
+                    <p
+                      style="
+                        font-size: 0.78rem;
+                        color: #6a9a6a;
+                        font-weight: 600;
+                        margin-bottom: 6px;
+                      "
+                      id="txt-humidity"
+                    >
+                      Humidity
+                    </p>
+                    <p
+                      style="
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                        color: #1b5e20;
+                      "
+                    >
+                      <span id="weather-humid">64</span>%
+                    </p>
+                  </div>
+                  <div style="text-align: center">
+                    <p
+                      style="
+                        font-size: 0.78rem;
+                        color: #6a9a6a;
+                        font-weight: 600;
+                        margin-bottom: 6px;
+                      "
+                      id="txt-wind"
+                    >
+                      Wind
+                    </p>
+                    <p
+                      style="
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                        color: #1b5e20;
+                      "
+                    >
+                      <span id="weather-wind">12</span> km/h
+                    </p>
+                  </div>
+                  <div style="text-align: center">
+                    <p
+                      style="
+                        font-size: 0.78rem;
+                        color: #6a9a6a;
+                        font-weight: 600;
+                        margin-bottom: 6px;
+                      "
+                      id="txt-rain"
+                    >
+                      Rain
+                    </p>
+                    <p
+                      style="
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                        color: #1b5e20;
+                      "
+                    >
+                      <span id="weather-rain">10</span>%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="grid"
+            id="main-dashboard-grid"
+            style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))"
+          >
+            <!-- Government Schemes -->
+            <div class="card">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  flex-wrap: wrap;
+                  margin-bottom: 20px;
+                "
+              >
+                <div class="section-title" style="margin-bottom: 0">
+                  <div class="section-icon">
+                    <i data-lucide="scroll-text"></i>
+                  </div>
+                  <h3 id="txt-schemes-title" style="font-size: 1.5rem">
+                    Govt Schemes
+                  </h3>
+                </div>
+                <button
+                  id="btn-ai-schemes"
+                  class="btn btn-primary"
+                  style="
+                    background: linear-gradient(135deg, #ffb300, #f57c00);
+                    color: white;
+                    border: none;
+                  "
+                >
+                  <i data-lucide="sparkles" style="width: 18px"></i> Suggest
+                  Best Schemes
+                </button>
+              </div>
+              <div
+                id="schemes-list"
+                style="display: flex; flex-direction: column; gap: 16px"
+              >
+                <div class="scheme-card" data-id="1">
+                  <span class="badge badge-success">Active</span>
+                  <h4>PM-Kisan Samman Nidhi</h4>
+                  <p>Income support of ₹6,000 per year.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nearby Banks -->
+            <div class="card">
+              <div class="section-title">
+                <div class="section-icon"><i data-lucide="landmark"></i></div>
+                <h3>Nearby Banks</h3>
+              </div>
+              <div
+                id="banks-list"
+                style="display: flex; flex-direction: column; gap: 12px"
+              >
+                <div class="bank-card">
+                  <h4>State Bank of India (SBI)</h4>
+                  <p>Agri Loan Interest: 4.0%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </section>
+
+      <!-- Pest Shield Page -->
+      <section
+        id="pest-page"
+        class="page"
+        style="
+          display: none;
+          padding: 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+          width: 100%;
+        "
+      >
+        <div class="section-title">
+          <h2>Pest Identification & Pesticide Mixer</h2>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px">
+          <h3 style="margin-bottom: 15px">Step 1: AI Pest Upload</h3>
+          <input
+            type="file"
+            id="pest-image-input"
+            accept="image/*"
+            style="margin-bottom: 10px"
+          />
+          <button
+            id="btn-analyze-pest"
+            class="btn btn-primary"
+            style="width: 100%"
+          >
+            Analyze Leaves via YOLOv8 AI
+          </button>
+          <div
+            id="pest-scan-preview"
+            style="
+              margin-top: 15px;
+              border: 1px dashed rgba(46, 204, 113, 0.5);
+              border-radius: 12px;
+              padding: 20px;
+              text-align: center;
+              color: #a0aab2;
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+            "
+          >
+            <i
+              data-lucide="scan-line"
+              style="
+                width: 40px;
+                height: 40px;
+                margin: 0 auto;
+                color: var(--primary);
+              "
+            ></i>
+            Upload a leaf photo to let AI diagnose the pest and calculate
+            treatment.
+          </div>
+        </div>
+
+        <!-- Live Pest Detection -->
+        <div class="card" style="margin-bottom: 20px">
+          <h3 style="margin-bottom: 12px">Live Pest Detection (Webcam)</h3>
+          <p
+            style="
+              margin: 0 0 10px 0;
+              color: var(--text-muted);
+              font-size: 0.9rem;
+            "
+          >
+            Load a TensorFlow.js detection/classification model and run live
+            inference from your camera. Default in-browser model is
+            <strong>coco-ssd</strong> for quick demo detection.
+          </p>
+
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              margin-bottom: 8px;
+              align-items: center;
+            "
+          >
+            <label style="margin: 0; font-weight: 600">Mode:</label>
+            <select id="detect-mode" style="padding: 6px">
+              <option value="local" selected>In-Browser (coco-ssd / TF)</option>
+              <option value="remote">Remote YOLOv8 (Server)</option>
+            </select>
+          </div>
+
+          <input
+            type="text"
+            id="model-url"
+            value="coco-ssd"
+            placeholder="For local: 'coco-ssd'. For remote: https://your-server/api/detect"
+            style="width: 100%; margin-bottom: 8px; padding: 8px"
+          />
+          <div style="display: flex; gap: 8px; margin-bottom: 8px">
+            <button id="btn-load-model" class="btn btn-soft-green">
+              Load Model / Validate Server
+            </button>
+            <button id="btn-start-live" class="btn btn-primary" disabled>
+              Start Live Detection
+            </button>
+            <button id="btn-stop-live" class="btn btn-ghost" disabled>
+              Stop
+            </button>
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              margin-bottom: 6px;
+              align-items: center;
+            "
+          >
+            <label style="margin: 0; font-weight: 600"
+              >Remote API Key (optional):</label
+            >
+            <input
+              type="text"
+              id="remote-api-key"
+              placeholder="Bearer token or API key"
+              style="flex: 1; padding: 6px"
+            />
+          </div>
+
+          <div
+            id="live-model-status"
+            style="margin-top: 10px; color: #a0aab2; font-size: 0.9rem"
+          >
+            Model not loaded.
+          </div>
+
+          <div
+            id="live-detect-container"
+            style="
+              display: none;
+              margin-top: 12px;
+              position: relative;
+              width: 100%;
+              max-width: 640px;
+              background: #000;
+              border-radius: 10px;
+              overflow: hidden;
+            "
+          >
+            <video
+              id="live-video"
+              autoplay
+              playsinline
+              style="width: 100%; height: 360px; object-fit: cover"
+            ></video>
+            <canvas
+              id="live-overlay"
+              style="
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+              "
+            ></canvas>
+          </div>
+        </div>
+
+        <!-- Pesticide Calculator (Hidden until Pest is found) -->
+        <div id="pest-calc-section" class="card" style="display: none">
+          <h3 style="margin-bottom: 15px">Step 2: Calculate Treatment</h3>
+          <label>Treatment Type:</label>
+          <select id="calc-type">
+            <option value="Organic">Organic Pesticide (e.g. Neem Oil)</option>
+            <option value="Chemical">
+              Chemical Pesticide (Use with caution)
+            </option>
+          </select>
+
+          <label>Area to be treated (sq meters):</label>
+          <input type="number" id="calc-area" placeholder="e.g. 50" min="1" />
+
+          <label>Concentration from Label (ml per 1L water):</label>
+          <input
+            type="number"
+            id="calc-ratio"
+            placeholder="e.g. 20"
+            min="0.1"
+            step="0.1"
+          />
+
+          <button
+            id="btn-calculate-mix"
+            class="btn btn-primary"
+            style="
+              width: 100%;
+              margin-top: 10px;
+              background: linear-gradient(135deg, #0277bd, #01579b);
+            "
+          >
+            <i
+              data-lucide="calculator"
+              style="display: inline; width: 16px"
+            ></i>
+            Calculate Mixing Ratio
+          </button>
+
+          <div
+            id="calc-results"
+            style="
+              display: none;
+              margin-top: 20px;
+              padding: 15px;
+              background: rgba(0, 0, 0, 0.2);
+              border-left: 4px solid #2ecc71;
+              border-radius: 4px;
+            "
+          >
+            <h4 style="color: #2ecc71; margin-bottom: 10px">
+              Recommended Mixing Details
+            </h4>
+            <p id="txt-calc-water" style="color: white; margin-bottom: 5px"></p>
+            <p
+              id="txt-calc-chemical"
+              style="color: white; margin-bottom: 5px"
+            ></p>
+            <p
+              id="txt-calc-method"
+              style="margin-top: 10px; font-weight: bold; color: #a9dfbf"
+            ></p>
+
+            <div
+              style="
+                margin-top: 25px;
+                padding: 12px;
+                background: rgba(231, 76, 60, 0.15);
+                border-left: 4px solid #e74c3c;
+                border-radius: 4px;
+              "
+            >
+              <span style="color: #e74c3c; font-weight: bold"
+                ><i
+                  data-lucide="alert-triangle"
+                  style="display: inline; width: 16px"
+                ></i>
+                Safety Disclaimer:</span
+              >
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: #f5b7b1;
+                  margin-top: 5px;
+                  margin-bottom: 0;
+                  line-height: 1.4;
+                "
+              >
+                Always wear protective gear (gloves, mask) before mixing. Follow
+                strict local regulations regarding chemical usage. Mixing
+                improper amounts can damage crops and the environment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Market Info Page -->
+      <section
+        id="market-page"
+        class="page"
+        style="
+          display: none;
+          padding: 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+          width: 100%;
+        "
+      >
+        <div class="section-title">
+          <h2>Daily Market Prices (Mandi)</h2>
+        </div>
+        <div class="grid" id="mandi-grid">
+          <div class="card">
+            <h3>Paddy (Rice)</h3>
+            <p style="font-size: 2rem; color: var(--primary)">₹2,200</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Water Requirement Calculator Page -->
+      <section
+        id="water-page"
+        class="page"
+        style="
+          display: none;
+          padding: 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+          width: 100%;
+        "
+      >
+        <div class="section-title">
+          <h2 id="txt-water-title">Smart Water Requirement Calculator</h2>
+          <p
+            id="txt-water-description"
+            style="color: var(--text-muted); max-width: 760px; margin-top: 10px"
+          >
+            Enter location, crop, soil, irrigation and growth stage details to
+            get exact daily and weekly water planning.
+          </p>
+        </div>
+
+        <div
+          class="grid water-calculator-grid"
+          style="
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+          "
+        >
+          <div class="card" style="padding: 24px">
+            <h3 style="margin-bottom: 18px">Planner Inputs</h3>
+            <label id="lbl-water-location">Farm Location</label>
+            <select id="water-location">
+              <option value="Chennai, TN">Chennai, Tamil Nadu</option>
+              <option value="Coimbatore, TN">Coimbatore, Tamil Nadu</option>
+              <option value="Pune, MH">Pune, Maharashtra</option>
+              <option value="Lucknow, UP">Lucknow, Uttar Pradesh</option>
+              <option value="Jaipur, RJ">Jaipur, Rajasthan</option>
+              <option value="Bengaluru, KA">Bengaluru, Karnataka</option>
+              <option value="Hyderabad, TS">Hyderabad, Telangana</option>
+              <option value="Kolkata, WB">Kolkata, West Bengal</option>
+            </select>
+
+            <label id="lbl-water-crop">Crop Type</label>
+            <select id="water-crop">
+              <option value="Paddy (Rice)">Paddy (Rice)</option>
+              <option value="Wheat">Wheat</option>
+              <option value="Maize">Maize</option>
+              <option value="Tomato">Tomato</option>
+              <option value="Cotton">Cotton</option>
+              <option value="Groundnut">Groundnut</option>
+              <option value="Sugarcane">Sugarcane</option>
+              <option value="Vegetables">Vegetables</option>
+              <option value="Pulses">Pulses</option>
+            </select>
+
+            <label id="lbl-water-area">Land Area</label>
+            <div
+              style="
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-bottom: 12px;
+              "
+            >
+              <input
+                id="water-area"
+                type="number"
+                min="0.1"
+                step="0.1"
+                placeholder="e.g. 1.0"
+                value="1"
+              />
+              <select id="water-area-unit" style="max-width: 160px">
+                <option value="acre">Acre</option>
+                <option value="hectare">Hectare</option>
+              </select>
+            </div>
+
+            <label id="lbl-water-soil">Soil Type</label>
+            <select id="water-soil">
+              <option value="Loam">Loam</option>
+              <option value="Sandy Loam">Sandy Loam</option>
+              <option value="Clay">Clay</option>
+              <option value="Sandy">Sandy</option>
+              <option value="Silt">Silt</option>
+            </select>
+
+            <label id="lbl-water-method">Irrigation Method</label>
+            <select id="water-method">
+              <option value="Drip">Drip Irrigation</option>
+              <option value="Sprinkler">Sprinkler Irrigation</option>
+              <option value="Furrow">Furrow Irrigation</option>
+              <option value="Flood">Flood/Irrigation Channel</option>
+            </select>
+
+            <label id="lbl-water-stage">Crop Growth Stage</label>
+            <select id="water-stage">
+              <option value="Planting">Planting</option>
+              <option value="Vegetative">Vegetative</option>
+              <option value="Flowering">Flowering</option>
+              <option value="Fruiting">Fruiting</option>
+              <option value="Maturity">Maturity</option>
+            </select>
+
+            <div
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 18px;
+              "
+            >
+              <button
+                id="btn-calc-water"
+                class="btn btn-primary"
+                style="flex: 1; min-width: 140px"
+              >
+                Calculate Water
+              </button>
+              <button
+                id="btn-water-voice"
+                class="btn btn-soft-green"
+                style="flex: 1; min-width: 140px"
+              >
+                Speak Guidance
+              </button>
+            </div>
+
+            <div
+              id="water-alerts"
+              class="water-alert-list"
+              style="margin-top: 18px; display: grid; gap: 10px"
+            ></div>
+          </div>
+
+          <div
+            class="card"
+            style="
+              padding: 24px;
+              display: flex;
+              flex-direction: column;
+              gap: 20px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 12px;
+              "
+            >
+              <div>
+                <h3 style="margin: 0">Weather Forecast</h3>
+                <p
+                  id="txt-weather-summary"
+                  style="
+                    margin: 8px 0 0;
+                    color: var(--text-muted);
+                    font-size: 0.95rem;
+                  "
+                >
+                  Real-time temperature, humidity and rainfall data for better
+                  irrigation.
+                </p>
+              </div>
+              <button
+                id="btn-refresh-weather"
+                class="btn btn-soft-green"
+                style="font-size: 0.85rem; padding: 10px 14px"
+              >
+                Refresh
+              </button>
+            </div>
+
+            <div
+              class="weather-cards-grid"
+              style="
+                display: grid;
+                gap: 14px;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+              "
+            >
+              <div class="metric-card">
+                <span class="metric-label">Temp</span>
+                <strong id="water-weather-temp">--°C</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Humidity</span>
+                <strong id="water-weather-humidity">--%</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Rainfall</span>
+                <strong id="water-weather-rain">-- mm</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Soil Moisture</span>
+                <strong id="water-weather-moisture">--%</strong>
+              </div>
+            </div>
+
+            <div
+              id="water-forecast-summary"
+              style="
+                padding: 16px;
+                background: rgba(255, 255, 255, 0.06);
+                border-radius: 16px;
+              "
+            >
+              <h4 style="margin: 0 0 8px">Upcoming Rain</h4>
+              <p
+                id="water-rain-forecast"
+                style="margin: 0; color: var(--text-muted)"
+              >
+                Fetching forecast...
+              </p>
+            </div>
+
+            <div
+              class="water-summary-card"
+              style="
+                background: rgba(46, 204, 113, 0.08);
+                padding: 18px;
+                border-radius: 18px;
+              "
+            >
+              <h3 style="margin: 0 0 14px">Water Requirement</h3>
+              <div id="water-results" style="display: grid; gap: 14px">
+                <div class="metric-card water-result-card">
+                  <span class="metric-label">Daily Need</span>
+                  <strong id="water-daily">-- L</strong>
+                </div>
+                <div class="metric-card water-result-card">
+                  <span class="metric-label">Weekly Need</span>
+                  <strong id="water-weekly">-- L</strong>
+                </div>
+                <div class="metric-card water-result-card">
+                  <span class="metric-label">Recommended Method</span>
+                  <strong id="water-recommended-method">--</strong>
+                </div>
+                <div class="metric-card water-result-card">
+                  <span class="metric-label">Water-saving Index</span>
+                  <strong id="water-efficiency-score">--</strong>
+                </div>
+              </div>
+
+              <div class="water-chart" style="margin-top: 20px">
+                <div
+                  class="chart-header"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+                  "
+                >
+                  <span>Water Use Visual</span>
+                  <span
+                    id="water-chart-tag"
+                    style="font-size: 0.85rem; color: var(--text-muted)"
+                    >Daily vs Weekly</span
+                  >
+                </div>
+                <div
+                  class="chart-bars"
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 12px;
+                    align-items: end;
+                    min-height: 180px;
+                  "
+                >
+                  <div class="chart-bar-container">
+                    <span class="chart-bar-label">Daily</span>
+                    <div
+                      class="chart-bar"
+                      id="water-bar-daily"
+                      style="height: 20%"
+                    ></div>
+                  </div>
+                  <div class="chart-bar-container">
+                    <span class="chart-bar-label">Weekly</span>
+                    <div
+                      class="chart-bar"
+                      id="water-bar-weekly"
+                      style="height: 40%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 24px">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 12px;
+              flex-wrap: wrap;
+              margin-bottom: 18px;
+            "
+          >
+            <div>
+              <h3 style="margin: 0">Irrigation Schedule & Tips</h3>
+              <p style="margin: 8px 0 0; color: var(--text-muted)">
+                Actionable schedule, alerts, and water-saving tips for your
+                farm.
+              </p>
+            </div>
+            <button
+              id="btn-water-schedule-voice"
+              class="btn btn-soft-green"
+              style="font-size: 0.9rem; padding: 10px 16px"
+            >
+              Listen Schedule
+            </button>
+          </div>
+
+          <div
+            id="water-schedule"
+            class="water-schedule-list"
+            style="display: grid; gap: 14px"
+          ></div>
+
+          <h4 style="margin: 24px 0 12px">Water-saving Tips</h4>
+          <ul
+            id="water-tips"
+            style="
+              display: grid;
+              gap: 10px;
+              list-style: none;
+              padding-left: 0;
+              margin: 0;
+            "
+          ></ul>
+        </div>
+      </section>
+
+      <!-- Crop Scheduler Page -->
+      <section
+        id="scheduler-page"
+        class="page"
+        style="
+          display: none;
+          padding: 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+          width: 100%;
+        "
+      >
+        <div class="section-title">
+          <h2>Monthly Crop Scheduler</h2>
+        </div>
+
+        <div
+          class="grid"
+          style="
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+          "
+        >
+          <div class="card">
+            <h3 style="margin-bottom: 20px">Step 1: Set Preferences</h3>
+
+            <label>Select Location (State/Region)</label>
+            <select id="sched-location">
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="West Bengal">West Bengal</option>
+            </select>
+
+            <label>Select Current Month</label>
+            <select id="sched-month">
+              <option value="January">January</option>
+              <option value="February">February</option>
+              <option value="March">March</option>
+              <option value="April">April</option>
+              <option value="May">May</option>
+              <option value="June">June</option>
+              <option value="July">July</option>
+              <option value="August">August</option>
+              <option value="September">September</option>
+              <option value="October">October</option>
+              <option value="November">November</option>
+              <option value="December">December</option>
+            </select>
+
+            <button
+              id="btn-generate-sched"
+              class="btn btn-primary"
+              style="width: 100%; margin-top: 10px"
+            >
+              <i
+                data-lucide="sparkles"
+                style="display: inline; width: 16px"
+              ></i>
+              Recommend Suitable Crops
+            </button>
+          </div>
+
+          <div class="card" id="recommended-crops-card" style="display: none">
+            <h3 style="margin-bottom: 20px">Step 2: Recommended Crops</h3>
+            <div
+              id="crop-recommendation-list"
+              style="display: flex; flex-direction: column; gap: 15px"
+            ></div>
+          </div>
+        </div>
+
+        <div
+          id="scheduler-task-view"
+          class="card"
+          style="display: none; margin-top: 25px"
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 20px;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              padding-bottom: 10px;
+            "
+          >
+            <h3 id="txt-selected-crop-title" style="margin: 0; color: #2ecc71">
+              Detailed Crop Schedule
+            </h3>
+            <button
+              class="btn btn-outline"
+              style="padding: 5px 12px; font-size: 0.85rem"
+              onclick="speakAllTasks()"
+            >
+              <i
+                data-lucide="volume-2"
+                style="display: inline; width: 14px"
+              ></i>
+              Listen to All
+            </button>
+          </div>
+
+          <div
+            id="timeline-calendar-view"
+            style="position: relative; padding-left: 30px"
+          >
+            <!-- Vertical Timeline Line -->
+            <div
+              style="
+                position: absolute;
+                left: 10px;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: rgba(46, 204, 113, 0.3);
+              "
+            ></div>
+            <div id="timeline-items"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Use strict display none initially -->
     </div>
-    <div class="floating-leaf" style="left: 10%; animation-duration: 12s, 3s; animation-delay: 0s;"></div>
-    <div class="floating-leaf" style="left: 40%; animation-duration: 15s, 4s; animation-delay: 2s;"></div>
-    <div class="floating-leaf" style="left: 80%; animation-duration: 11s, 2.5s; animation-delay: 1s;"></div>
-    
-    <main class="dashboard-content" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
-        <!-- Profile Completion Banner -->
-        <div id="profile-banner" class="card" style="display: none; background: linear-gradient(135deg, #FF9800, #F57C00); color: white; margin-bottom: 25px; border: none; padding: 15px 25px; align-items: center; justify-content: space-between; flex-direction: row; gap: 15px;">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <i data-lucide="sparkles" style="width: 24px; height: 24px;"></i>
-                <div>
-                    <h4 id="txt-banner-title" style="margin: 0; color: white;">Complete Your Profile for Better Recommendations</h4>
-                    <p id="txt-banner-sub" style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Help us give you precision advice on crops and weather.</p>
-                </div>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button id="btn-complete-profile" class="btn btn-primary" style="background: white; color: #F57C00; font-size: 0.85rem; padding: 8px 16px;">Set Up Now</button>
-                <button type="button" id="btn-skip-profile" class="btn btn-ghost" style="color: white; font-size: 0.85rem; padding: 8px;"><i data-lucide="x"></i></button>
-            </div>
-        </div>
 
-        <!-- Offline SMS Alert System Status -->
-        <div id="sms-status-card" class="card" style="margin-bottom: 25px; border-left: 6px solid var(--primary); background: rgba(255, 255, 255, 0.05); display: none; justify-content: space-between; align-items: center; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); flex-wrap: wrap; gap: 10px;">
-            <div style="display:flex; align-items:center; gap:15px;">
-                <div style="background: #2E7D32; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i data-lucide="message-square"></i>
-                </div>
-                <div>
-                    <h4 style="margin:0; font-size: 1rem; color: #1B5E20;">SMS Offline Advisory System</h4>
-                    <p id="txt-sms-status" style="margin:0; font-size: 0.8rem; color: #666;">Active for: +91 97XXXX XX10 (Tamil Nadu)</p>
-                </div>
-            </div>
-            <button class="btn btn-primary" id="btn-test-sms" style="padding: 6px 14px; font-size: 0.75rem; font-weight: bold;">Simulate Alert</button>
-        </div>
-
-        <div class="hero-section" style="display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 40px;">
-            <div class="hero-left" style="flex: 1 1 500px;">
-                <h1 id="txt-dash-title" style="color: #1B5E20; font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 18px;">AI-powered farming help in your language.</h1>
-                <p style="color: #4a7a4a; font-size: 1.05rem; margin-bottom: 28px; line-height: 1.65;">Snap a crop leaf, ask in voice or text, and get disease diagnosis, weather-based tips, and expert guidance — fast, friendly, and multilingual.</p>
-                
-                <!-- Scanner Tools moved here -->
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                    <input type="file" id="crop-image-upload" accept="image/*" capture="environment" style="display: none;">
-                    <button id="btn-upload-image" class="btn btn-soft-green" style="padding: 12px 20px; font-weight: bold; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
-                        <i data-lucide="upload" style="width: 18px; height: 18px;"></i> <span id="txt-upload-image">Upload Crop Image</span>
-                    </button>
-                    <button id="btn-open-camera" class="btn btn-primary" style="padding: 12px 24px; font-weight: bold; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                        Diagnose
-                    </button>
-                </div>
-                
-                <div id="camera-container" style="display:none; width:100%; max-width:400px; height:200px; background:#000; border-radius:12px; overflow:hidden; position:relative;">
-                    <video id="camera-stream" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
-                    <button type="button" id="btn-close-camera" class="btn" style="position:absolute; top:5px; right:5px; padding:4px; background:rgba(0,0,0,0.5); color:white; border:none;"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
-                    <button id="btn-capture-scan" class="btn btn-primary" style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); padding:6px 16px; font-size:0.85rem;">Capture & Scan</button>
-                </div>
-                
-                <div id="scan-result" style="display: none; margin-top: 10px; padding: 15px; background: rgba(76, 175, 80, 0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; max-width:400px; color: var(--text-main);">
-                    <p style="font-weight: 600; font-size: 0.9rem;">Scan Result:</p>
-                    <p id="scan-result-text" style="font-size: 0.85rem; color: var(--primary);">No crop detected yet.</p>
-                    <img id="uploaded-image-preview" class="hidden" style="width: 100%; border-radius: 8px; margin-top: 8px; max-height: 150px; object-fit: cover;">
-                </div>
-            </div>
-
-            <div class="hero-right" style="flex: 1 1 400px; position: relative;">
-                <div class="sun-orb"></div>
-                
-                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                    <div class="card" style="flex: 1; text-align: center; padding: 18px 10px;">
-                        <h3 style="font-size: 1.6rem; margin-bottom: 5px; color:#1B5E20;">256</h3>
-                        <p style="font-size: 0.78rem; color: #5a8a5a;">Farmers helped today</p>
-                    </div>
-                    <div class="card" style="flex: 1; text-align: center; padding: 18px 10px;">
-                        <h3 style="font-size: 1.6rem; margin-bottom: 5px; color:#1B5E20;">10</h3>
-                        <p style="font-size: 0.78rem; color: #5a8a5a;">Languages supported</p>
-                    </div>
-                    <div class="card" style="flex: 1; text-align: center; padding: 18px 10px;">
-                        <h3 style="font-size: 1.6rem; margin-bottom: 5px; color:#1B5E20;">~92%</h3>
-                        <p style="font-size: 0.78rem; color: #5a8a5a;">Demo accuracy</p>
-                    </div>
-                </div>
-
-                <!-- Weather Status Widget (AgriAssist Style) -->
-                <div class="card" style="padding: 22px; border-radius: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <div style="display:flex; align-items:center; gap:8px; flex: 1;">
-                            <i data-lucide="map-pin" style="width:16px; height:16px; color:#4CAF50;"></i>
-                            <select id="location-input" style="background: transparent; border: none; border-bottom: 2px solid rgba(46, 204, 113, 0.3); font-size: 0.9rem; font-weight: 700; color: #1B5E20; padding: 2px 5px; margin: 0; width: 100%; border-radius: 0; cursor: pointer;">
-                                <option value="Chennai, TN" selected>Chennai, Tamil Nadu</option>
-                                <option value="Coimbatore, TN">Coimbatore, Tamil Nadu</option>
-                                <option value="Ludhiana, PB">Ludhiana, Punjab</option>
-                                <option value="Pune, MH">Pune, Maharashtra</option>
-                                <option value="Lucknow, UP">Lucknow, Uttar Pradesh</option>
-                                <option value="Vijayawada, AP">Vijayawada, Andhra Pradesh</option>
-                                <option value="Hassan, KA">Hassan, Karnataka</option>
-                                <option value="Burdwan, WB">Burdwan, West Bengal</option>
-                                <option value="Bhopal, MP">Bhopal, Madhya Pradesh</option>
-                                <option value="Jaipur, RJ">Jaipur, Rajasthan</option>
-                                <option value="Nashik, MH">Nashik, Maharashtra</option>
-                            </select>
-                        </div>
-                        <button id="btn-update-weather" class="btn btn-soft-green" style="padding: 7px 14px; font-size: 0.82rem; font-weight: bold; border-radius: 10px;">Update Weather</button>
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                        <i data-lucide="cloud-sun" id="weather-icon" style="width: 44px; height: 44px; color: #F9A825;"></i>
-                        <h2 style="font-size: 2.2rem; margin: 0; font-weight: 800; color: #1B5E20;"><span id="weather-temp">32</span>°C</h2>
-                        <span style="font-size: 1rem; color: #4a7a4a; font-weight:600;" id="txt-weather-status">Partly Cloudy</span>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; border-top: 1px solid #e2f5e2; padding-top: 16px;">
-                        <div style="text-align: center;">
-                            <p style="font-size: 0.78rem; color: #6a9a6a; font-weight: 600; margin-bottom: 6px;" id="txt-humidity">Humidity</p>
-                            <p style="font-weight: 700; font-size: 1.1rem; color: #1B5E20;"><span id="weather-humid">64</span>%</p>
-                        </div>
-                        <div style="text-align: center;">
-                            <p style="font-size: 0.78rem; color: #6a9a6a; font-weight: 600; margin-bottom: 6px;" id="txt-wind">Wind</p>
-                            <p style="font-weight: 700; font-size: 1.1rem; color: #1B5E20;"><span id="weather-wind">12</span> km/h</p>
-                        </div>
-                        <div style="text-align: center;">
-                            <p style="font-size: 0.78rem; color: #6a9a6a; font-weight: 600; margin-bottom: 6px;" id="txt-rain">Rain</p>
-                            <p style="font-weight: 700; font-size: 1.1rem; color: #1B5E20;"><span id="weather-rain">10</span>%</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="grid" id="main-dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-                    <!-- Government Schemes -->
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
-                            <div class="section-title" style="margin-bottom: 0;">
-                                <div class="section-icon"><i data-lucide="scroll-text"></i></div>
-                                <h3 id="txt-schemes-title" style="font-size: 1.5rem;">Govt Schemes</h3>
-                            </div>
-                            <button id="btn-ai-schemes" class="btn btn-primary" style="background: linear-gradient(135deg, #FFB300, #F57C00); color: white; border: none;"><i data-lucide="sparkles" style="width: 18px;"></i> Suggest Best Schemes</button>
-                        </div>
-                        <div id="schemes-list" style="display: flex; flex-direction: column; gap: 16px;">
-                            <div class="scheme-card" data-id="1">
-                                <span class="badge badge-success">Active</span>
-                                <h4>PM-Kisan Samman Nidhi</h4>
-                                <p>Income support of ₹6,000 per year.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Nearby Banks -->
-                    <div class="card">
-                        <div class="section-title">
-                            <div class="section-icon"><i data-lucide="landmark"></i></div>
-                            <h3>Nearby Banks</h3>
-                        </div>
-                        <div id="banks-list" style="display: flex; flex-direction: column; gap: 12px;">
-                            <div class="bank-card">
-                                <h4>State Bank of India (SBI)</h4>
-                                <p>Agri Loan Interest: 4.0%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </section>
-
-        <!-- Pest Shield Page -->
-        <section id="pest-page" class="page" style="display: none; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
-            <div class="section-title">
-                <h2>Pest Identification & Pesticide Mixer</h2>
-            </div>
-            
-            <div class="card" style="margin-bottom: 20px;">
-                <h3 style="margin-bottom: 15px;">Step 1: AI Pest Upload</h3>
-                <input type="file" id="pest-image-input" accept="image/*" style="margin-bottom: 10px;">
-                <button id="btn-analyze-pest" class="btn btn-primary" style="width: 100%;">Analyze Leaves via YOLOv8 AI</button>
-                <div id="pest-scan-preview" style="margin-top: 15px; border: 1px dashed rgba(46, 204, 113, 0.5); border-radius: 12px; padding: 20px; text-align: center; color: #a0aab2; display: flex; flex-direction: column; gap:10px;">
-                    <i data-lucide="scan-line" style="width:40px; height:40px; margin: 0 auto; color: var(--primary);"></i>
-                    Upload a leaf photo to let AI diagnose the pest and calculate treatment.
-                </div>
-            </div>
-
-            <!-- Live Pest Detection -->
-            <div class="card" style="margin-bottom: 20px;">
-                <h3 style="margin-bottom: 12px;">Live Pest Detection (Webcam)</h3>
-                <p style="margin:0 0 10px 0; color: var(--text-muted); font-size:0.9rem;">Load a TensorFlow.js detection/classification model and run live inference from your camera. Default in-browser model is <strong>coco-ssd</strong> for quick demo detection.</p>
-
-                <div style="display:flex; gap:8px; margin-bottom:8px; align-items:center;">
-                    <label style="margin:0; font-weight:600;">Mode:</label>
-                    <select id="detect-mode" style="padding:6px;">
-                        <option value="local" selected>In-Browser (coco-ssd / TF)</option>
-                        <option value="remote">Remote YOLOv8 (Server)</option>
-                    </select>
-                </div>
-
-                <input type="text" id="model-url" value="coco-ssd" placeholder="For local: 'coco-ssd'. For remote: https://your-server/api/detect" style="width:100%; margin-bottom:8px; padding:8px;">
-                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                    <button id="btn-load-model" class="btn btn-soft-green">Load Model / Validate Server</button>
-                    <button id="btn-start-live" class="btn btn-primary" disabled>Start Live Detection</button>
-                    <button id="btn-stop-live" class="btn btn-ghost" disabled>Stop</button>
-                </div>
-                <div style="display:flex; gap:8px; margin-bottom:6px; align-items:center;">
-                    <label style="margin:0; font-weight:600;">Remote API Key (optional):</label>
-                    <input type="text" id="remote-api-key" placeholder="Bearer token or API key" style="flex:1; padding:6px;">
-                </div>
-
-                <div id="live-model-status" style="margin-top:10px; color:#a0aab2; font-size:0.9rem;">Model not loaded.</div>
-
-                <div id="live-detect-container" style="display:none; margin-top:12px; position:relative; width:100%; max-width:640px; background:#000; border-radius:10px; overflow:hidden;">
-                    <video id="live-video" autoplay playsinline style="width:100%; height:360px; object-fit:cover;"></video>
-                    <canvas id="live-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;"></canvas>
-                </div>
-            </div>
-
-            <!-- Pesticide Calculator (Hidden until Pest is found) -->
-            <div id="pest-calc-section" class="card" style="display: none;">
-                <h3 style="margin-bottom: 15px;">Step 2: Calculate Treatment</h3>
-                <label>Treatment Type:</label>
-                <select id="calc-type">
-                    <option value="Organic">Organic Pesticide (e.g. Neem Oil)</option>
-                    <option value="Chemical">Chemical Pesticide (Use with caution)</option>
-                </select>
-
-                <label>Area to be treated (sq meters):</label>
-                <input type="number" id="calc-area" placeholder="e.g. 50" min="1">
-
-                <label>Concentration from Label (ml per 1L water):</label>
-                <input type="number" id="calc-ratio" placeholder="e.g. 20" min="0.1" step="0.1">
-
-                <button id="btn-calculate-mix" class="btn btn-primary" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, #0277bd, #01579b);"><i data-lucide="calculator" style="display:inline; width:16px;"></i> Calculate Mixing Ratio</button>
-
-                <div id="calc-results" style="display: none; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-left: 4px solid #2ECC71; border-radius: 4px;">
-                    <h4 style="color: #2ECC71; margin-bottom: 10px;">Recommended Mixing Details</h4>
-                    <p id="txt-calc-water" style="color: white; margin-bottom:5px;"></p>
-                    <p id="txt-calc-chemical" style="color: white; margin-bottom:5px;"></p>
-                    <p id="txt-calc-method" style="margin-top: 10px; font-weight: bold; color: #A9DFBF;"></p>
-
-                    <div style="margin-top: 25px; padding: 12px; background: rgba(231, 76, 60, 0.15); border-left: 4px solid #e74c3c; border-radius: 4px;">
-                        <span style="color:#e74c3c; font-weight:bold;"><i data-lucide="alert-triangle" style="display:inline; width:16px;"></i> Safety Disclaimer:</span>
-                        <p style="font-size:0.85rem; color:#f5b7b1; margin-top:5px; margin-bottom:0; line-height: 1.4;">Always wear protective gear (gloves, mask) before mixing. Follow strict local regulations regarding chemical usage. Mixing improper amounts can damage crops and the environment.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Market Info Page -->
-        <section id="market-page" class="page" style="display: none; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
-            <div class="section-title">
-                <h2>Daily Market Prices (Mandi)</h2>
-            </div>
-            <div class="grid" id="mandi-grid">
-                <div class="card">
-                    <h3>Paddy (Rice)</h3>
-                    <p style="font-size: 2rem; color: var(--primary);">₹2,200</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Water Requirement Calculator Page -->
-        <section id="water-page" class="page" style="display: none; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
-            <div class="section-title">
-                <h2 id="txt-water-title">Smart Water Requirement Calculator</h2>
-                <p id="txt-water-description" style="color: var(--text-muted); max-width: 760px; margin-top: 10px;">Enter location, crop, soil, irrigation and growth stage details to get exact daily and weekly water planning.</p>
-            </div>
-
-            <div class="grid water-calculator-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-                <div class="card" style="padding: 24px;">
-                    <h3 style="margin-bottom: 18px;">Planner Inputs</h3>
-                    <label id="lbl-water-location">Farm Location</label>
-                    <select id="water-location">
-                        <option value="Chennai, TN">Chennai, Tamil Nadu</option>
-                        <option value="Coimbatore, TN">Coimbatore, Tamil Nadu</option>
-                        <option value="Pune, MH">Pune, Maharashtra</option>
-                        <option value="Lucknow, UP">Lucknow, Uttar Pradesh</option>
-                        <option value="Jaipur, RJ">Jaipur, Rajasthan</option>
-                        <option value="Bengaluru, KA">Bengaluru, Karnataka</option>
-                        <option value="Hyderabad, TS">Hyderabad, Telangana</option>
-                        <option value="Kolkata, WB">Kolkata, West Bengal</option>
-                    </select>
-
-                    <label id="lbl-water-crop">Crop Type</label>
-                    <select id="water-crop">
-                        <option value="Paddy (Rice)">Paddy (Rice)</option>
-                        <option value="Wheat">Wheat</option>
-                        <option value="Maize">Maize</option>
-                        <option value="Tomato">Tomato</option>
-                        <option value="Cotton">Cotton</option>
-                        <option value="Groundnut">Groundnut</option>
-                        <option value="Sugarcane">Sugarcane</option>
-                        <option value="Vegetables">Vegetables</option>
-                        <option value="Pulses">Pulses</option>
-                    </select>
-
-                    <label id="lbl-water-area">Land Area</label>
-                    <div style="display:flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
-                        <input id="water-area" type="number" min="0.1" step="0.1" placeholder="e.g. 1.0" value="1">
-                        <select id="water-area-unit" style="max-width: 160px;">
-                            <option value="acre">Acre</option>
-                            <option value="hectare">Hectare</option>
-                        </select>
-                    </div>
-
-                    <label id="lbl-water-soil">Soil Type</label>
-                    <select id="water-soil">
-                        <option value="Loam">Loam</option>
-                        <option value="Sandy Loam">Sandy Loam</option>
-                        <option value="Clay">Clay</option>
-                        <option value="Sandy">Sandy</option>
-                        <option value="Silt">Silt</option>
-                    </select>
-
-                    <label id="lbl-water-method">Irrigation Method</label>
-                    <select id="water-method">
-                        <option value="Drip">Drip Irrigation</option>
-                        <option value="Sprinkler">Sprinkler Irrigation</option>
-                        <option value="Furrow">Furrow Irrigation</option>
-                        <option value="Flood">Flood/Irrigation Channel</option>
-                    </select>
-
-                    <label id="lbl-water-stage">Crop Growth Stage</label>
-                    <select id="water-stage">
-                        <option value="Planting">Planting</option>
-                        <option value="Vegetative">Vegetative</option>
-                        <option value="Flowering">Flowering</option>
-                        <option value="Fruiting">Fruiting</option>
-                        <option value="Maturity">Maturity</option>
-                    </select>
-
-                    <div style="display:flex; flex-wrap:wrap; gap: 12px; margin-top: 18px;">
-                        <button id="btn-calc-water" class="btn btn-primary" style="flex: 1; min-width: 140px;">Calculate Water</button>
-                        <button id="btn-water-voice" class="btn btn-soft-green" style="flex: 1; min-width: 140px;">Speak Guidance</button>
-                    </div>
-
-                    <div id="water-alerts" class="water-alert-list" style="margin-top: 18px; display: grid; gap: 10px;"></div>
-                </div>
-
-                <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
-                    <div style="display:flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
-                        <div>
-                            <h3 style="margin:0;">Weather Forecast</h3>
-                            <p id="txt-weather-summary" style="margin: 8px 0 0; color: var(--text-muted); font-size: 0.95rem;">Real-time temperature, humidity and rainfall data for better irrigation.</p>
-                        </div>
-                        <button id="btn-refresh-weather" class="btn btn-soft-green" style="font-size:0.85rem; padding: 10px 14px;">Refresh</button>
-                    </div>
-
-                    <div class="weather-cards-grid" style="display:grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));">
-                        <div class="metric-card">
-                            <span class="metric-label">Temp</span>
-                            <strong id="water-weather-temp">--°C</strong>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Humidity</span>
-                            <strong id="water-weather-humidity">--%</strong>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Rainfall</span>
-                            <strong id="water-weather-rain">-- mm</strong>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Soil Moisture</span>
-                            <strong id="water-weather-moisture">--%</strong>
-                        </div>
-                    </div>
-
-                    <div id="water-forecast-summary" style="padding: 16px; background: rgba(255,255,255,0.06); border-radius: 16px;">
-                        <h4 style="margin:0 0 8px;">Upcoming Rain</h4>
-                        <p id="water-rain-forecast" style="margin:0; color: var(--text-muted);">Fetching forecast...</p>
-                    </div>
-
-                    <div class="water-summary-card" style="background: rgba(46,204,113,0.08); padding: 18px; border-radius: 18px;">
-                        <h3 style="margin:0 0 14px;">Water Requirement</h3>
-                        <div id="water-results" style="display:grid; gap: 14px;">
-                            <div class="metric-card water-result-card">
-                                <span class="metric-label">Daily Need</span>
-                                <strong id="water-daily">-- L</strong>
-                            </div>
-                            <div class="metric-card water-result-card">
-                                <span class="metric-label">Weekly Need</span>
-                                <strong id="water-weekly">-- L</strong>
-                            </div>
-                            <div class="metric-card water-result-card">
-                                <span class="metric-label">Recommended Method</span>
-                                <strong id="water-recommended-method">--</strong>
-                            </div>
-                            <div class="metric-card water-result-card">
-                                <span class="metric-label">Water-saving Index</span>
-                                <strong id="water-efficiency-score">--</strong>
-                            </div>
-                        </div>
-
-                        <div class="water-chart" style="margin-top: 20px;">
-                            <div class="chart-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-                                <span>Water Use Visual</span>
-                                <span id="water-chart-tag" style="font-size:0.85rem; color: var(--text-muted);">Daily vs Weekly</span>
-                            </div>
-                            <div class="chart-bars" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; align-items:end; min-height: 180px;">
-                                <div class="chart-bar-container">
-                                    <span class="chart-bar-label">Daily</span>
-                                    <div class="chart-bar" id="water-bar-daily" style="height: 20%;"></div>
-                                </div>
-                                <div class="chart-bar-container">
-                                    <span class="chart-bar-label">Weekly</span>
-                                    <div class="chart-bar" id="water-bar-weekly" style="height: 40%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="padding: 24px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap: 12px; flex-wrap:wrap; margin-bottom: 18px;">
-                    <div>
-                        <h3 style="margin:0;">Irrigation Schedule & Tips</h3>
-                        <p style="margin: 8px 0 0; color: var(--text-muted);">Actionable schedule, alerts, and water-saving tips for your farm.</p>
-                    </div>
-                    <button id="btn-water-schedule-voice" class="btn btn-soft-green" style="font-size:0.9rem; padding: 10px 16px;">Listen Schedule</button>
-                </div>
-
-                <div id="water-schedule" class="water-schedule-list" style="display:grid; gap: 14px;"></div>
-
-                <h4 style="margin: 24px 0 12px;">Water-saving Tips</h4>
-                <ul id="water-tips" style="display:grid; gap: 10px; list-style: none; padding-left: 0; margin: 0;"></ul>
-            </div>
-        </section>
-
-        <!-- Crop Scheduler Page -->
-        <section id="scheduler-page" class="page" style="display: none; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
-            <div class="section-title">
-                <h2>Monthly Crop Scheduler</h2>
-            </div>
-            
-            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <div class="card">
-                    <h3 style="margin-bottom: 20px;">Step 1: Set Preferences</h3>
-                    
-                    <label>Select Location (State/Region)</label>
-                    <select id="sched-location">
-                        <option value="Tamil Nadu">Tamil Nadu</option>
-                        <option value="Punjab">Punjab</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Uttar Pradesh">Uttar Pradesh</option>
-                        <option value="Karnataka">Karnataka</option>
-                        <option value="Andhra Pradesh">Andhra Pradesh</option>
-                        <option value="West Bengal">West Bengal</option>
-                    </select>
-
-                    <label>Select Current Month</label>
-                    <select id="sched-month">
-                        <option value="January">January</option>
-                        <option value="February">February</option>
-                        <option value="March">March</option>
-                        <option value="April">April</option>
-                        <option value="May">May</option>
-                        <option value="June">June</option>
-                        <option value="July">July</option>
-                        <option value="August">August</option>
-                        <option value="September">September</option>
-                        <option value="October">October</option>
-                        <option value="November">November</option>
-                        <option value="December">December</option>
-                    </select>
-
-                    <button id="btn-generate-sched" class="btn btn-primary" style="width: 100%; margin-top: 10px;"><i data-lucide="sparkles" style="display:inline; width:16px;"></i> Recommend Suitable Crops</button>
-                </div>
-
-                <div class="card" id="recommended-crops-card" style="display: none;">
-                    <h3 style="margin-bottom: 20px;">Step 2: Recommended Crops</h3>
-                    <div id="crop-recommendation-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
-                </div>
-            </div>
-
-            <div id="scheduler-task-view" class="card" style="display: none; margin-top: 25px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                    <h3 id="txt-selected-crop-title" style="margin: 0; color: #2ECC71;">Detailed Crop Schedule</h3>
-                    <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.85rem;" onclick="speakAllTasks()"><i data-lucide="volume-2" style="display:inline; width:14px;"></i> Listen to All</button>
-                </div>
-                
-                <div id="timeline-calendar-view" style="position: relative; padding-left: 30px;">
-                    <!-- Vertical Timeline Line -->
-                    <div style="position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: rgba(46, 204, 113, 0.3);"></div>
-                    <div id="timeline-items"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Use strict display none initially -->
-    </div>
-    
     <!-- Floating AI Chat Widget -->
     <div id="ai-chat-widget">
-        <div id="chat-window" class="card" style="display: none; width: 350px; height: 500px; flex-direction: column; gap: 10px; padding: 15px; position: fixed; bottom: 85px; right: 20px; z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.15); border: 2px solid var(--primary);">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2f5e2; padding-bottom: 10px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 36px; height: 36px; border-radius: 8px; background: #2E7D32; color: white; display: flex; align-items: center; justify-content: center;">
-                        <i data-lucide="bot" style="width: 20px; height: 20px;"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.1rem; margin: 0; color: #1B5E20;">Uzhavan AI</h3>
-                        <p style="font-size: 0.75rem; color: #5a8a5a; margin: 0;">Online</p>
-                    </div>
-                </div>
-                <button id="btn-close-chat" class="btn btn-soft-green" style="padding: 5px 8px;"><i data-lucide="x" style="width:16px;"></i></button>
+      <div
+        id="chat-window"
+        class="card"
+        style="
+          display: none;
+          width: 350px;
+          height: 500px;
+          flex-direction: column;
+          gap: 10px;
+          padding: 15px;
+          position: fixed;
+          bottom: 85px;
+          right: 20px;
+          z-index: 1000;
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+          border: 2px solid var(--primary);
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2f5e2;
+            padding-bottom: 10px;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div
+              style="
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                background: #2e7d32;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <i data-lucide="bot" style="width: 20px; height: 20px"></i>
             </div>
-            
-            <div id="chat-messages" style="flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-right: 5px; background: #fafafa; border-radius: 8px; padding: 10px;">
-                <div class="message msg-bot" style="background: #e8f5e9; border: 1px solid #d1fae5; border-radius: 0 14px 14px 14px; padding: 10px 14px; max-width: 90%;">
-                    <span style="font-size: 0.95rem; color: #2E7D32; font-weight: 500;">Vanakkam! Let me know what you need help with.</span>
-                </div>
+            <div>
+              <h3 style="font-size: 1.1rem; margin: 0; color: #1b5e20">
+                Uzhavan AI
+              </h3>
+              <p style="font-size: 0.75rem; color: #5a8a5a; margin: 0">
+                Online
+              </p>
             </div>
-
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="chat-input" placeholder="Type or speak your farming query..." style="flex: 1; padding: 10px; margin: 0;">
-                <button id="btn-mic" class="btn btn-outline" style="padding: 10px 15px; border-color: rgba(46, 204, 113, 0.4); color: #fff;" title="Voice Assistant"><i data-lucide="mic" style="width:18px;"></i></button>
-                <button id="btn-send" class="btn btn-primary" style="padding: 10px 15px;"><i data-lucide="send" style="width:18px;"></i></button>
-            </div>
+          </div>
+          <button
+            id="btn-close-chat"
+            class="btn btn-soft-green"
+            style="padding: 5px 8px"
+          >
+            <i data-lucide="x" style="width: 16px"></i>
+          </button>
         </div>
-        
-        <button id="btn-toggle-chat" class="btn btn-primary" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 8px 25px rgba(46,125,50,0.4); z-index: 1001; padding: 0;">
-            <i data-lucide="message-circle" style="width: 30px; height: 30px; color: white;"></i>
-        </button>
+
+        <div
+          id="chat-messages"
+          style="
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            padding-right: 5px;
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 10px;
+          "
+        >
+          <div
+            class="message msg-bot"
+            style="
+              background: #e8f5e9;
+              border: 1px solid #d1fae5;
+              border-radius: 0 14px 14px 14px;
+              padding: 10px 14px;
+              max-width: 90%;
+            "
+          >
+            <span style="font-size: 0.95rem; color: #2e7d32; font-weight: 500"
+              >Vanakkam! Let me know what you need help with.</span
+            >
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Type or speak your farming query..."
+            style="flex: 1; padding: 10px; margin: 0"
+          />
+          <button
+            id="btn-mic"
+            class="btn btn-outline"
+            style="
+              padding: 10px 15px;
+              border-color: rgba(46, 204, 113, 0.4);
+              color: #fff;
+            "
+            title="Voice Assistant"
+          >
+            <i data-lucide="mic" style="width: 18px"></i>
+          </button>
+          <button
+            id="btn-send"
+            class="btn btn-primary"
+            style="padding: 10px 15px"
+          >
+            <i data-lucide="send" style="width: 18px"></i>
+          </button>
+        </div>
+      </div>
+
+      <button
+        id="btn-toggle-chat"
+        class="btn btn-primary"
+        style="
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+          z-index: 1001;
+          padding: 0;
+        "
+      >
+        <i
+          data-lucide="message-circle"
+          style="width: 30px; height: 30px; color: white"
+        ></i>
+      </button>
     </div>
-    
+
     <!-- Scripts -->
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
+      // Initialize Lucide icons
+      lucide.createIcons();
     </script>
 
     <!-- Google Translate Script -->
     <div id="google_translate_element"></div>
     <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element');
-        }
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: "en", autoDisplay: false },
+          "google_translate_element",
+        );
+      }
     </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    <!-- Profile Modal -->
-    <div id="profile-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center;">
-        <div class="card modal" style="max-width: 400px; width: 90%; background: rgba(25, 45, 30, 0.95); border: 1px solid rgba(46, 204, 113, 0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="color: white; margin: 0;">Complete Your Farmer Profile</h3>
-                <button id="btn-close-modal" class="btn btn-ghost" style="padding: 5px; color: white;"><i data-lucide="x"></i></button>
-            </div>
-            
-            <p style="font-size: 0.9rem; color: #a0aab2; margin-bottom: 20px;">Fill in these basic details so our AI can seamlessly check your eligibility for government schemes.</p>
-            
-            <label style="color: white;">Age (Years)</label>
-            <input type="number" id="profile-age" placeholder="e.g. 45" min="18" max="100" style="background: rgba(0,0,0,0.2); color: white;">
-            
-            <label style="color: white;">Land Ownership (in Acres)</label>
-            <input type="number" id="profile-land" placeholder="e.g. 3.5" step="0.1" style="background: rgba(0,0,0,0.2); color: white;">
-            
-            <label style="color: white;">Annual Income (₹)</label>
-            <input type="number" id="profile-income" placeholder="e.g. 80000" style="background: rgba(0,0,0,0.2); color: white;">
-            
-            <label style="color: white;">Category</label>
-            <select id="profile-category" style="background: rgba(0,0,0,0.2); color: white;">
-                <option value="General">General</option>
-                <option value="OBC">OBC</option>
-                <option value="SC/ST">SC/ST</option>
-            </select>
-
-            <button id="btn-save-profile" class="btn btn-primary" style="width:100%; margin-top:10px;">Save Profile to Network</button>
-        </div>
-    </div>
-
-    <script>
-const canvas = document.getElementById("effect");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-
-for (let i = 0; i < 100; i++) {
-  particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 3 + 1,
-    d: Math.random() * 2
-  });
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "rgba(255,255,255,0.6)";
-  ctx.beginPath();
-
-  for (let i = 0; i < particles.length; i++) {
-    let p = particles[i];
-    ctx.moveTo(p.x, p.y);
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-  }
-
-  ctx.fill();
-  update();
-}
-
-function update() {
-  for (let i = 0; i < particles.length; i++) {
-    let p = particles[i];
-    p.y += p.d;
-
-    if (p.y > canvas.height) {
-      p.y = 0;
-      p.x = Math.random() * canvas.width;
-    }
-  }
-}
-
-setInterval(draw, 30);
-</script>
     <!-- TensorFlow.js and Coco-SSD (optional preloads for live detection) -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
-</body>
+  </body>
 </html>

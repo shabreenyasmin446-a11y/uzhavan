@@ -1,4 +1,24 @@
-// Uzhavan Smart Farming - Pure Client-Side Logic
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import {
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+const firebaseConfig = {apiKey: "AIzaSyCAQKDkkjdk87eLA_3e-dK8kZPXpjTbMSE",
+    authDomain: "uzhavan-b1f99.firebaseapp.com",
+    projectId: "uzhavan-b1f99",
+    storageBucket: "uzhavan-b1f99.firebasestorage.app",
+    messagingSenderId: "896196850525",
+    appId: "1:896196850525:web:ba2498365beb5d7b6deeb4",
+    measurementId: "G-YSS0KYB6SB"
+  // Paste the fields from your Firebase config object here:
+  // apiKey, authDomain, projectId, storageBucket,
+  // messagingSenderId, and appId
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
 document.addEventListener('DOMContentLoaded', () => {
     // Basic Navigation Setup
     const pages = document.querySelectorAll('.page');
@@ -37,56 +57,105 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn) btn.addEventListener('click', () => showPage(navBtns[btnId]));
     });
 
-    // -----------------------
-    // LOGIN FLOW
-    // -----------------------
-    let generatedOTP = ""; // Store the unique OTP
-    const btnGetOtp = document.getElementById('btn-get-otp');
-    const stepPhone = document.getElementById('step-phone');
-    const stepOtp = document.getElementById('step-otp');
-    const btnVerify = document.getElementById('btn-verify');
-    const otpInput = document.getElementById('otp-input');
-    const otpStatusMsg = document.getElementById('otp-status-msg');
+    let confirmationResult = null;
+let recaptchaVerifier = null;
 
-    if (btnGetOtp) {
-        btnGetOtp.addEventListener('click', () => {
-            const phone = document.getElementById('placeholder-phone').value;
-            if(phone.length < 10) {
-                alert("Please enter a valid 10-digit number.");
-                return;
+const btnGetOtp = document.getElementById('btn-get-otp');
+const stepPhone = document.getElementById('step-phone');
+const stepOtp = document.getElementById('step-otp');
+const btnVerify = document.getElementById('btn-verify');
+const otpInput = document.getElementById('otp-input');
+const otpStatusMsg = document.getElementById('otp-status-msg');
+
+if (btnGetOtp) {
+    btnGetOtp.addEventListener('click', async () => {
+        const phone = document
+            .getElementById('placeholder-phone')
+            .value
+            .replace(/\D/g, '');
+
+        if (phone.length !== 10) {
+            alert('Please enter a 10-digit phone number.');
+            return;
+        }
+
+        // Use the saved US test number when testing.
+        // Other numbers are treated as Indian (+91) numbers.
+        const fullPhone = phone === '6505553434'
+            ? '+16505553434'
+            : `+91${phone}`;
+
+        try {
+            if (!recaptchaVerifier) {
+                recaptchaVerifier = new RecaptchaVerifier(
+                    auth,
+                    'recaptcha-container',
+                    { size: 'invisible' }
+                );
             }
 
-            // Generate a UNIQUE 4-digit OTP
-            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-            
+            confirmationResult = await signInWithPhoneNumber(
+                auth,
+                fullPhone,
+                recaptchaVerifier
+            );
+
             stepPhone.style.display = 'none';
             stepOtp.style.display = 'block';
-            
-            // Mock OTP sent via SMS
-            alert(`Uzhavan: Your unique login OTP is ${generatedOTP}. Do not share this with anyone.`);
-            if (otpStatusMsg) otpStatusMsg.innerText = "OTP sent to +91 " + phone;
-        });
-    }
 
-    if (btnVerify) {
-        btnVerify.addEventListener('click', () => {
-            const userInput = otpInput ? otpInput.value : "";
-            
-            if (userInput === generatedOTP) {
-                const navGroup = document.getElementById('app-navigation');
-                if (navGroup) navGroup.style.display = 'block';
-                showPage('dashboard-page');
-                document.getElementById('nav-dashboard').classList.add('active-nav');
-                initDashboard();
-            } else {
-                alert("⚠️ Invalid OTP. Please check the code sent to your phone and try again.");
-                if (otpStatusMsg) {
-                    otpStatusMsg.innerText = "Incorrect OTP. Please try again.";
-                    otpStatusMsg.style.color = "#FF3333";
-                }
+            if (otpStatusMsg) {
+                otpStatusMsg.innerText = `Enter the code for ${fullPhone}`;
+                otpStatusMsg.style.color = '#16834a';
             }
-        });
-    }
+        } catch (error) {
+            console.error('Could not send Firebase OTP:', error);
+            alert(`Could not send the code: ${error.message}`);
+
+            if (recaptchaVerifier) {
+                recaptchaVerifier.clear();
+                recaptchaVerifier = null;
+            }
+        }
+    });
+}
+
+if (btnVerify) {
+    btnVerify.addEventListener('click', async () => {
+        const code = otpInput ? otpInput.value.trim() : '';
+
+        if (!confirmationResult) {
+            alert('Please request a verification code first.');
+            return;
+        }
+
+        if (code.length !== 6) {
+            alert('Enter the 6-digit verification code.');
+            return;
+        }
+
+        try {
+            await confirmationResult.confirm(code);
+
+            const navGroup = document.getElementById('app-navigation');
+            if (navGroup) navGroup.style.display = 'block';
+
+            showPage('dashboard-page');
+
+            const dashboardButton = document.getElementById('nav-dashboard');
+            if (dashboardButton) dashboardButton.classList.add('active-nav');
+
+            initDashboard();
+        } catch (error) {
+            console.error('Firebase OTP verification failed:', error);
+            alert('The code was not accepted. Check it and try again.');
+
+            if (otpStatusMsg) {
+                otpStatusMsg.innerText = 'Incorrect code. Please try again.';
+                otpStatusMsg.style.color = '#b42318';
+            }
+        }
+    });
+}
 
     const btnLogout = document.getElementById('btn-logout');
     if (btnLogout) {
