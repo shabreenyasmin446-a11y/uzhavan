@@ -1,3 +1,4 @@
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import {
   getAuth,
@@ -19,6 +20,7 @@ const firebaseConfig = {apiKey: "AIzaSyCAQKDkkjdk87eLA_3e-dK8kZPXpjTbMSE",
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 document.addEventListener('DOMContentLoaded', () => {
     // Basic Navigation Setup
     const pages = document.querySelectorAll('.page');
@@ -134,7 +136,14 @@ if (btnVerify) {
         }
 
         try {
-            await confirmationResult.confirm(code);
+            const userCredential = await confirmationResult.confirm(code);
+const user = userCredential.user;
+
+await setDoc(doc(db, 'users', user.uid), {
+    phoneNumber: user.phoneNumber,
+    updatedAt: serverTimestamp()
+}, { merge: true });
+
 
             const navGroup = document.getElementById('app-navigation');
             if (navGroup) navGroup.style.display = 'block';
