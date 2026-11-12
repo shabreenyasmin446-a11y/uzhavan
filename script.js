@@ -513,24 +513,42 @@ await setDoc(doc(db, 'users', user.uid), {
         if(profileModal) profileModal.style.display = 'none';
     });
 
-    document.getElementById('btn-save-profile')?.addEventListener('click', () => {
-        const age = document.getElementById('profile-age').value;
-        const land = document.getElementById('profile-land').value;
-        const income = document.getElementById('profile-income').value;
-        
-        userProfile = {
-            age: age ? parseInt(age) : null,
-            land: land ? parseFloat(land) : null,
-            income: income ? parseFloat(income) : null
-        };
-        
-        profileModal.style.display = 'none';
-        if (profileBanner) profileBanner.style.display = 'none';
-        
-        // Refresh schemes if AI is active
-        if (aiActive) renderSchemes();
-    });
+    document.getElementById('btn-save-profile')?.addEventListener('click', async () => {
+    const user = auth.currentUser;
 
+    if (!user) {
+        alert('Please sign in before saving your profile.');
+        return;
+    }
+
+    const ageValue = document.getElementById('profile-age').value;
+    const landValue = document.getElementById('profile-land').value;
+    const incomeValue = document.getElementById('profile-income').value;
+
+    const profile = {
+        age: ageValue ? parseInt(ageValue, 10) : null,
+        land: landValue ? parseFloat(landValue) : null,
+        income: incomeValue ? parseFloat(incomeValue) : null
+    };
+
+    try {
+        await setDoc(doc(db, 'users', user.uid), {
+            profile: profile,
+            profileUpdatedAt: serverTimestamp()
+        }, { merge: true });
+
+        userProfile = profile;
+        profileModal.style.display = 'none';
+
+        if (profileBanner) profileBanner.style.display = 'none';
+        if (aiActive) renderSchemes();
+
+        alert('Farmer profile saved successfully.');
+    } catch (error) {
+        console.error('Could not save farmer profile:', error);
+        alert('Could not save your profile. Please try again.');
+    }
+});
     // AI Suggestions Handler
     document.getElementById('btn-ai-schemes')?.addEventListener('click', () => {
         if (!userProfile) {
