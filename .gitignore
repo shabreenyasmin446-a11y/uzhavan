@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.py[cod]
+uzhavan.db
+uzhavan.db-shm
+uzhavan.db-wal
+.env
+.env.*
+!.env.example
